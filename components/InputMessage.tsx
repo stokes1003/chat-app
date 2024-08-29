@@ -1,33 +1,49 @@
 'use client';
 import React, { useState } from 'react';
 import { supabase } from '@/supabase';
+import { Message } from '@/app/page';
 
-const InputMessage = ({ messagesData, username }) => {
+type InputMessageProps = {
+  messagesData: Message[];
+  username: string | null;
+};
+
+const InputMessage: React.FC<InputMessageProps> = ({
+  messagesData,
+  username,
+}) => {
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState(messagesData);
+  const [messages, setMessages] = useState<Message[]>(messagesData);
 
   const sendMessage = async () => {
-    await supabase.from('messages').insert({
-      username: username,
-      message: message,
-      created_at: new Date(),
-    });
-    const newMessage = {
-      username,
-      message,
-      created_at: new Date(),
-    };
-    setMessages((prevMessages) => [...prevMessages, newMessage]);
-    setMessage('');
+    const { data, error } = await supabase
+      .from('messages')
+      .insert({
+        username,
+        message,
+        created_at: new Date(),
+      })
+      .select();
+
+    if (error) {
+      console.error('Error sending message:', error.message);
+      return;
+    }
+
+    if (data && data.length > 0) {
+      const newMessage = data[0] as Message;
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      setMessage('');
+    }
   };
 
   return (
     <div>
       <div className="messages">
-        {messages.map((message) => (
-          <div key={message.id} className="message">
-            <div className="messageUser">{message.username}</div>
-            <div className="messageText">{message.message}</div>
+        {messages.map((msg) => (
+          <div key={msg.id} className="message">
+            <div className="messageUser">{msg.username}</div>
+            <div className="messageText">{msg.message}</div>
           </div>
         ))}
       </div>
