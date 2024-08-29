@@ -1,7 +1,8 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { supabase } from '@/supabase';
 import { Message } from '@/app/page';
+import { RealtimePostgresInsertPayload } from '@supabase/supabase-js';
 
 type InputMessageProps = {
   messagesData: Message[];
@@ -31,11 +32,24 @@ const InputMessage: React.FC<InputMessageProps> = ({
     }
 
     if (data && data.length > 0) {
-      const newMessage = data[0] as Message;
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
       setMessage('');
     }
   };
+
+  const handleInserts = (payload: RealtimePostgresInsertPayload<Message>) => {
+    setMessages((prevMessages) => [...prevMessages, payload.new]);
+  };
+
+  useEffect(() => {
+    supabase
+      .channel('messages')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'messages' },
+        handleInserts
+      )
+      .subscribe();
+  }, []);
 
   return (
     <div>
