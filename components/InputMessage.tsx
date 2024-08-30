@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '@/supabase';
 import { Message } from '@/app/page';
 import { RealtimePostgresInsertPayload } from '@supabase/supabase-js';
+import { FaRegPaperPlane } from 'react-icons/fa';
+import { FaMagnifyingGlass } from 'react-icons/fa6';
 
 type InputMessageProps = {
   messagesData: Message[];
@@ -17,6 +19,10 @@ const InputMessage: React.FC<InputMessageProps> = ({
   const [messages, setMessages] = useState<Message[]>(messagesData);
 
   const sendMessage = async () => {
+    if (!message.trim()) {
+      console.error('Cannot send an empty message.');
+      return;
+    }
     const { data, error } = await supabase
       .from('messages')
       .insert({
@@ -52,28 +58,85 @@ const InputMessage: React.FC<InputMessageProps> = ({
   }, []);
 
   return (
-    <div>
-      <div className="messages">
-        {messages.map((msg) => (
-          <div key={msg.id} className="message">
-            <div className="messageUser">{msg.username}</div>
-            <div className="messageText">{msg.message}</div>
+    <div className="flex justify-center">
+      <div className="grid grid-cols-5 grid-flow-col mt-10 border-stokes-blue/90 bg-stokes-blue/90 border-4 rounded-lg w-2/3 ">
+        <div id="contacts" className="p-2 my-4">
+          <div className="font-bold text-white text-center">Contacts</div>
+
+          <div className="relative mx-2">
+            <span className="flex gap-2 absolute pl-2 text-slate-400 top-[5px] ">
+              <FaMagnifyingGlass size="13" />
+            </span>
+
+            <input placeholder="Search" className="rounded-lg pl-7 w-full" />
           </div>
-        ))}
-      </div>
-      <div>
-        <form
-          onSubmit={(event) => {
-            event.preventDefault();
-            sendMessage();
-          }}
+        </div>
+        <div
+          id="chat-box"
+          className="border-4 col-span-4 bg-slate-100/80 rounded-lg"
         >
-          <input
-            value={message}
-            onChange={(event) => setMessage(event.target.value)}
-          />
-          <button type="submit">Send</button>
-        </form>
+          <div id="messages" className="h-[400px] overflow-scroll">
+            {messages.map((msg) => (
+              <div
+                key={msg.id}
+                className={`flex ${
+                  msg.username === username ? 'justify-end' : 'justify-start'
+                }`}
+              >
+                <div
+                  id="message"
+                  className={`flex flex-col ${
+                    msg.username === username
+                      ? 'w-2/3  bg-stokes-teal my-1 rounded-lg'
+                      : 'w-2/3  bg-stokes-blue my-1 rounded-lg'
+                  }`}
+                >
+                  <div className="font-bold text-white  ml-4" id="messageUser">
+                    {msg.username}{' '}
+                    <span className="font-extralight text-slate-100">
+                      {new Date(msg.created_at).toLocaleTimeString([], {
+                        timeStyle: 'short',
+                      })}
+                    </span>
+                  </div>
+                  <div
+                    className="font-normal text-white  ml-4"
+                    id="messageText"
+                  >
+                    {msg.message}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div>
+            <div id="chat-input" className="rounded">
+              <form
+                className="flex flex-row cursor-text h-14"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  sendMessage();
+                }}
+              >
+                <input
+                  className="w-full h-full rounded-lg "
+                  placeholder=" Type a message..."
+                  value={message}
+                  onChange={(event) => setMessage(event.target.value)}
+                  type="text"
+                />
+                <div id="button" className="self-center">
+                  <button
+                    className="p-4 text-white bg-stokes-teal shadow-lg drop-shadow-sm shadow-inherit rounded-md"
+                    type="submit"
+                  >
+                    <FaRegPaperPlane size="20" />
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
