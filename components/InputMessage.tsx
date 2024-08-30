@@ -45,13 +45,11 @@ const InputMessage: React.FC<InputMessageProps> = ({
 
     if (data && data.length > 0) {
       setMessage('');
-      scrollToBottom();
     }
   };
 
   const handleInserts = (payload: RealtimePostgresInsertPayload<Message>) => {
     setMessages((prevMessages) => [...prevMessages, payload.new]);
-    scrollToBottom();
   };
 
   useEffect(() => {
@@ -64,12 +62,14 @@ const InputMessage: React.FC<InputMessageProps> = ({
       )
       .subscribe();
 
-    scrollToBottom();
-
     return () => {
       channel.unsubscribe();
     };
   }, []);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   return (
     <div className="flex justify-center">
@@ -92,7 +92,6 @@ const InputMessage: React.FC<InputMessageProps> = ({
           id="chat-box"
           className="border-4 col-span-4 bg-slate-100/80 rounded-lg"
         >
-          {/* Messages container */}
           <div id="messages" className="h-[400px] overflow-y-scroll">
             {messages.map((msg) => (
               <div
