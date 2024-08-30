@@ -8,11 +8,12 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'stokes-blue': '#0081A7',
-        'stokes-teal': '#00AFB9',
+        'stokes-blue': '#2596be',
+        'stokes-teal': '#2ba497',
         'stokes-yellow': '#FDFCDC',
-        'stokes-orange': '#FED9B7',
+        'stokes-orange': '#e8947b',
         'stokes-red': '#F07167',
+        'stokes-dark-blue': '#0e6484',
       },
     },
   },

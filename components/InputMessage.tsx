@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { supabase } from '@/supabase';
 import { Message } from '@/app/page';
 import { RealtimePostgresInsertPayload } from '@supabase/supabase-js';
@@ -17,6 +17,12 @@ const InputMessage: React.FC<InputMessageProps> = ({
 }) => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>(messagesData);
+
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView();
+  };
 
   const sendMessage = async () => {
     if (!message.trim()) {
@@ -39,15 +45,17 @@ const InputMessage: React.FC<InputMessageProps> = ({
 
     if (data && data.length > 0) {
       setMessage('');
+      scrollToBottom();
     }
   };
 
   const handleInserts = (payload: RealtimePostgresInsertPayload<Message>) => {
     setMessages((prevMessages) => [...prevMessages, payload.new]);
+    scrollToBottom();
   };
 
   useEffect(() => {
-    supabase
+    const channel = supabase
       .channel('messages')
       .on(
         'postgres_changes',
@@ -55,11 +63,17 @@ const InputMessage: React.FC<InputMessageProps> = ({
         handleInserts
       )
       .subscribe();
+
+    scrollToBottom();
+
+    return () => {
+      channel.unsubscribe();
+    };
   }, []);
 
   return (
     <div className="flex justify-center">
-      <div className="grid grid-cols-5 grid-flow-col mt-10 border-stokes-blue/90 bg-stokes-blue/90 border-4 rounded-lg w-2/3 ">
+      <div className="grid grid-cols-5 grid-flow-col mt-10 border-stokes-dark-blue bg-stokes-dark-blue border-4 rounded-lg w-2/3 ">
         <div id="contacts" className="p-2 my-4">
           <div className="font-bold text-white text-center">Contacts</div>
 
@@ -68,14 +82,18 @@ const InputMessage: React.FC<InputMessageProps> = ({
               <FaMagnifyingGlass size="13" />
             </span>
 
-            <input placeholder="Search" className="rounded-lg pl-7 w-full" />
+            <input
+              placeholder="Search"
+              className="rounded-lg border-stokes-dark-blue border-2 pl-7 w-full"
+            />
           </div>
         </div>
         <div
           id="chat-box"
           className="border-4 col-span-4 bg-slate-100/80 rounded-lg"
         >
-          <div id="messages" className="h-[400px] overflow-scroll">
+          {/* Messages container */}
+          <div id="messages" className="h-[400px] overflow-y-scroll">
             {messages.map((msg) => (
               <div
                 key={msg.id}
@@ -99,6 +117,7 @@ const InputMessage: React.FC<InputMessageProps> = ({
                       })}
                     </span>
                   </div>
+
                   <div
                     className="font-normal text-white  ml-4"
                     id="messageText"
@@ -108,7 +127,10 @@ const InputMessage: React.FC<InputMessageProps> = ({
                 </div>
               </div>
             ))}
+
+            <div ref={messagesEndRef} />
           </div>
+
           <div>
             <div id="chat-input" className="rounded">
               <form
@@ -119,7 +141,7 @@ const InputMessage: React.FC<InputMessageProps> = ({
                 }}
               >
                 <input
-                  className="w-full h-full rounded-lg "
+                  className="w-full h-full rounded-lg mx-1 border-stokes-dark-blue border-2"
                   placeholder=" Type a message..."
                   value={message}
                   onChange={(event) => setMessage(event.target.value)}
@@ -127,7 +149,7 @@ const InputMessage: React.FC<InputMessageProps> = ({
                 />
                 <div id="button" className="self-center">
                   <button
-                    className="p-4 text-white bg-stokes-teal shadow-lg drop-shadow-sm shadow-inherit rounded-md"
+                    className="p-4 text-white  bg-stokes-orange shadow-lg drop-shadow-sm shadow-inherit rounded-md"
                     type="submit"
                   >
                     <FaRegPaperPlane size="20" />
