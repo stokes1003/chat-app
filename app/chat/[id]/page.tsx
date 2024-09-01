@@ -10,10 +10,13 @@ const Page = async ({ params }: { params: { id: string } }) => {
     imageUrl: user.imageUrl,
     id: user.id,
   }));
+
   const { data: messagesData } = await supabase
     .from('messages')
     .select()
-    .eq('chat_id', params.id);
+    .or(
+      `and(sender_id.eq.${user?.id},chat_id.eq.${params.id}),and(sender_id.eq.${params.id},chat_id.eq.${user?.id})`
+    );
 
   return (
     <ChatBox
