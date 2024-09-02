@@ -4,7 +4,9 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { RiChatNewLine } from 'react-icons/ri';
-import Modal from './Modal';
+import NewChatModal from './NewChatModal';
+import { useDisclosure } from '@mantine/hooks';
+import { Modal } from '@mantine/core';
 
 interface SideBarProps {
   usersList: {
@@ -16,24 +18,23 @@ interface SideBarProps {
 
 const SideBar: React.FC<SideBarProps> = ({ usersList }) => {
   const [contact, setContact] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const filtertedContacts = usersList.filter((user) =>
     user.username.toLowerCase().includes(contact.toLowerCase())
   );
-  console.log(isModalOpen);
+  const [opened, { open, close }] = useDisclosure(false);
 
   return (
     <div id="contacts" className="p-2 my-4 text-center">
-      <div className=" font-bold text-white items-center inline-flex gap-2">
+      <div className=" font-bold text-stokes-primary items-center inline-flex gap-2">
         Chats
         <RiChatNewLine
           className="cursor-pointer"
           onClick={() => {
-            setIsModalOpen(true);
+            open();
           }}
         />
       </div>
-      {isModalOpen && <Modal />}
+      <NewChatModal usersList={usersList} close={close} opened={opened} />
 
       <div className="relative m-2">
         <span className="flex gap-2 absolute pl-2 text-slate-400 top-[5px] ">
@@ -42,7 +43,7 @@ const SideBar: React.FC<SideBarProps> = ({ usersList }) => {
 
         <input
           placeholder="Search"
-          className="rounded-lg border-stokes-dark-blue border-2 pl-7 w-full"
+          className="rounded-lg outline-stokes-secondary outline-2 pl-7 w-full"
           value={contact}
           onChange={(event) => setContact(event.target.value)}
         />
@@ -50,7 +51,7 @@ const SideBar: React.FC<SideBarProps> = ({ usersList }) => {
       <div className="flex flex-col gap-3">
         {filtertedContacts.map((user) => (
           <Link href={`/chat/${user.id}`} key={user.id}>
-            <div className="text-white cursor-pointer self-center inline-flex gap-2">
+            <div className="text-stokes-primary cursor-pointer self-center inline-flex gap-2">
               <Image
                 src={user.imageUrl}
                 alt="profile"

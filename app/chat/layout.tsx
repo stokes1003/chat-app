@@ -15,7 +15,7 @@ const DirectMessage = async ({
 
   return (
     <div className="flex justify-center">
-      <div className="grid grid-cols-5 grid-flow-col mt-10 border-stokes-dark-blue bg-stokes-dark-blue border-4 rounded-lg w-2/3 ">
+      <div className="grid grid-cols-5 grid-flow-col mt-10 border-stokes-secondary bg-gradient-to-r from-stokes-secondary/95 to-stokes-primary border-4 rounded-lg w-2/3 ">
         <SideBar usersList={usersList} />
         {children}
       </div>

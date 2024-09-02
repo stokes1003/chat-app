@@ -3,6 +3,7 @@ import { FaRegPaperPlane } from 'react-icons/fa';
 import { useEffect, useRef, useState } from 'react';
 import { supabase } from '@/supabase';
 import { RealtimePostgresInsertPayload } from '@supabase/supabase-js';
+import Image from 'next/image';
 
 type Message = {
   id: number;
@@ -97,10 +98,19 @@ const ChatBox: React.FC<ChatBoxProps> = ({
   return (
     <div
       id="chat-box"
-      className="border-4 col-span-4 bg-slate-100/80 rounded-lg"
+      className="outline-2  col-span-4 bg-stokes-primary/70 outline-stokes-secondary rounded-lg"
     >
-      <div id="chat-name">
-        <div className="font-bold bg-stokes-dark-blue text-white text-center">
+      <div id="chat-name" className="flex flex-col gap-3 m-1">
+        <div className="w-full justify-center font-bold rounded-md bg-stokes-secondary/80 outline-1 outline-stokes-primary text-stokes-primary  inline-flex gap-2">
+          <Image
+            src={
+              usersList.find((user) => user.id === chatId)?.imageUrl as string
+            }
+            alt="profile"
+            width="20"
+            height="20"
+            className="rounded-full"
+          />
           {usersList.find((user) => user.id === chatId)?.username}
         </div>
         <div id="messages" className="h-[400px] overflow-y-scroll">
@@ -115,8 +125,8 @@ const ChatBox: React.FC<ChatBoxProps> = ({
                 id="message"
                 className={`flex flex-col ${
                   msg.username === username
-                    ? 'w-2/3  bg-stokes-blue my-1 rounded-lg'
-                    : 'w-2/3  bg-stokes-dark-blue my-1 rounded-lg'
+                    ? 'w-2/3 m-1 bg-stokes-accent/80  rounded-lg'
+                    : 'w-2/3 m-1 bg-stokes-secondary/80  rounded-lg'
                 }`}
               >
                 <div className="font-bold text-white  ml-4" id="messageUser">
@@ -141,22 +151,22 @@ const ChatBox: React.FC<ChatBoxProps> = ({
         <div>
           <div id="chat-input" className="rounded">
             <form
-              className="flex flex-row cursor-text h-14"
+              className="flex flex-row cursor-text h-14 "
               onSubmit={(event) => {
                 event.preventDefault();
                 sendMessage(message);
               }}
             >
               <input
-                className="w-full h-full rounded-lg mx-1 border-stokes-dark-blue border-2"
+                className="w-full h-full rounded-lg mx-1 text-stokes-secondary "
                 placeholder=" Type a message..."
                 value={message}
                 onChange={(event) => setMessage(event.target.value)}
                 type="text"
               />
-              <div id="button" className="self-center">
+              <div id="button" className="self-center mr-1">
                 <button
-                  className="p-4 text-white  bg-stokes-orange shadow-lg drop-shadow-sm shadow-inherit rounded-md"
+                  className="p-4 text-white  bg-stokes-accent/80 shadow-lg drop-shadow-sm shadow-inherit rounded-md"
                   type="submit"
                 >
                   <FaRegPaperPlane size="20" />

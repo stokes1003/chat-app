@@ -8,14 +8,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'stokes-blue': '#2596be',
-        'stokes-teal': '#2ba497',
-        'stokes-yellow': '#FDFCDC',
-        'stokes-orange': '#e8947b',
-        'stokes-red': '#F07167',
-        'stokes-dark-blue': '#0e6484',
-        'stokes-light-gray': '#f0f0f0',
-        'stokes-dark-gray': '#b3b3b3',
+        'stokes-secondary': '#5e69ee',
+        'stokes-accent': '#39AFEA',
+        'stokes-primary': ' #F4F4FB',
+        'stokes-light-gray': '#F4F4FB',
       },
     },
   },

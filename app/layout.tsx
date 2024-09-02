@@ -8,6 +8,9 @@ import {
   SignedOut,
   UserButton,
 } from '@clerk/nextjs';
+import '@mantine/core/styles.css';
+
+import { ColorSchemeScript, MantineProvider } from '@mantine/core';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -24,14 +27,19 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
+        <head>
+          <ColorSchemeScript />
+        </head>
         <body className={inter.className}>
-          <SignedOut>
-            <SignInButton />
-          </SignedOut>
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
-          {children}
+          <MantineProvider>
+            <SignedOut>
+              <SignInButton />
+            </SignedOut>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+            {children}
+          </MantineProvider>
         </body>
       </html>
     </ClerkProvider>
