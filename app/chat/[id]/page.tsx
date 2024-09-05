@@ -14,16 +14,20 @@ const Page = async ({ params }: { params: { id: string } }) => {
   const { data: messagesData } = await supabase
     .from('messages')
     .select()
-    .or(
-      `and(sender_id.eq.${user?.id},chat_id.eq.${params.id}),and(sender_id.eq.${params.id},chat_id.eq.${user?.id})`
-    );
+    .eq('conversation_id', params.id);
+
+  const { data: conversationsData } = await supabase
+    .from('conversations')
+    .select()
+    .eq('id', params.id);
 
   return (
     <ChatBox
       messagesData={messagesData || []}
+      conversationData={conversationsData?.[0]}
       username={user?.username || ''}
       usersList={usersList}
-      chatId={params.id}
+      conversationId={params.id}
     />
   );
 };

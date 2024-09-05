@@ -1,5 +1,6 @@
 import SideBar from '@/components/SideBar';
-import { clerkClient } from '@clerk/nextjs/server';
+import { ClerkProvider } from '@clerk/nextjs';
+import { clerkClient, currentUser } from '@clerk/nextjs/server';
 
 const DirectMessage = async ({
   children,
@@ -14,8 +15,8 @@ const DirectMessage = async ({
   }));
 
   return (
-    <div className="flex justify-center">
-      <div className="grid grid-cols-5 grid-flow-col mt-10 border-stokes-secondary bg-gradient-to-r from-stokes-secondary/95 to-stokes-primary border-4 rounded-lg w-2/3 ">
+    <div className="flex w-full h-full justify-center">
+      <div className="grid grid-cols-5 grid-flow-col m-4 border-stokes-secondary bg-gradient-to-r from-stokes-secondary/95 to-stokes-primary border-4 rounded-lg w-full h-full ">
         <SideBar usersList={usersList} />
         {children}
       </div>

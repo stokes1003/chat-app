@@ -1,19 +1,31 @@
 import { useState } from 'react';
-import { MultiSelect } from '@mantine/core';
-import { Modal, Button } from '@mantine/core';
-import { Input } from '@mantine/core';
+import { MultiSelect, Modal, Button, Input } from '@mantine/core';
+import { useUser } from '@clerk/nextjs';
+import { supabase } from '@/supabase';
+import { useRouter } from 'next/navigation';
 
-interface ModalProps {
-  usersList: {
-    username: string;
-    imageUrl: string;
-    id: string;
-  }[];
-  opened: boolean;
-  close: () => void;
+interface User {
+  username: string;
+  imageUrl: string;
+  id: string;
 }
 
-const NewChatModal: React.FC<ModalProps> = ({ usersList, close, opened }) => {
+interface ModalProps {
+  usersList: User[];
+  opened: boolean;
+  close: () => void;
+  getGroups: () => void;
+}
+
+const NewChatModal: React.FC<ModalProps> = ({
+  usersList,
+  close,
+  opened,
+  getGroups,
+}) => {
+  const { user } = useUser();
+  const router = useRouter();
+
   const [chatName, setChatName] = useState('');
   const [chatMembers, setChatMembers] = useState<string[]>([]);
 
@@ -22,10 +34,34 @@ const NewChatModal: React.FC<ModalProps> = ({ usersList, close, opened }) => {
     value: user.username,
   }));
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(chatName);
-    console.log(chatMembers);
+
+    const participants = [
+      ...chatMembers
+        .map((member) => usersList.find((user) => user.username === member)?.id)
+        .filter((id): id is string => id !== undefined),
+      user?.id,
+    ];
+
+    const { data: insertData, error } = await supabase
+      .from('conversations')
+      .insert({
+        is_group: true,
+        participants: participants,
+        group_name: chatName,
+      })
+      .select();
+
+    if (error) {
+      console.error('Error creating conversation:', error.message);
+      return;
+    }
+
+    if (insertData && insertData.length > 0) {
+      router.push(`/chat/${insertData[0].id}`);
+      await getGroups();
+    }
   };
 
   return (
@@ -37,7 +73,6 @@ const NewChatModal: React.FC<ModalProps> = ({ usersList, close, opened }) => {
             label="Add Friends"
             placeholder="Add Friends"
             searchable
-            multiple
             value={chatMembers}
             onChange={(value) => setChatMembers(value)}
             className="m-2"
@@ -46,11 +81,11 @@ const NewChatModal: React.FC<ModalProps> = ({ usersList, close, opened }) => {
             <Input
               placeholder="Chat Name"
               value={chatName}
-              onChange={(event) => setChatName(event.target.value)}
+              onChange={(event) => setChatName(event.currentTarget.value)}
               className="m-2"
             />
           </Input.Wrapper>
-          <Button color="#39AFEA" type="submit" className="m-2">
+          <Button color="#5e69ee" type="submit" className="m-2">
             Create
           </Button>
         </form>
@@ -58,4 +93,5 @@ const NewChatModal: React.FC<ModalProps> = ({ usersList, close, opened }) => {
     </>
   );
 };
+
 export default NewChatModal;

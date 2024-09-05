@@ -1,70 +1,183 @@
 'use client';
-import { FaMagnifyingGlass } from 'react-icons/fa6';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
+import { supabase } from '@/supabase';
 import { RiChatNewLine } from 'react-icons/ri';
 import NewChatModal from './NewChatModal';
 import { useDisclosure } from '@mantine/hooks';
-import { Modal } from '@mantine/core';
+import { useUser } from '@clerk/nextjs';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { GrGroup } from 'react-icons/gr';
+import { ImCancelCircle } from 'react-icons/im';
+
+interface User {
+  username: string;
+  imageUrl: string;
+  id: string;
+}
+
+interface Group {
+  id: string;
+  group_name: string;
+  is_group: boolean;
+  participants: string[];
+}
 
 interface SideBarProps {
-  usersList: {
-    username: string;
-    imageUrl: string;
-    id: string;
-  }[];
+  usersList: User[];
 }
 
 const SideBar: React.FC<SideBarProps> = ({ usersList }) => {
-  const [contact, setContact] = useState('');
-  const filtertedContacts = usersList.filter((user) =>
-    user.username.toLowerCase().includes(contact.toLowerCase())
-  );
+  const { user } = useUser();
+  const [groups, setGroups] = useState<Group[]>([]);
+  const router = useRouter();
+  const [hovered, setHovered] = useState<undefined | string>();
+
   const [opened, { open, close }] = useDisclosure(false);
+  const defaultGroupAvi = (
+    <div className="bg-stokes-accent h-[30px] w-[30px] border-2 border-stokes-primary flex justify-center items-center rounded-full">
+      <GrGroup className="rounded-full " />
+    </div>
+  );
+
+  const handleConversation = async (recipientId: string) => {
+    if (!user) return;
+
+    // Step 1: Check if conversation exists
+    const { data: existingConversations, error } = await supabase
+      .from('conversations')
+      .select('*')
+      .contains('participants', [user.id, recipientId])
+      .eq('is_group', false);
+
+    if (error) {
+      console.error('Error fetching conversation:', error);
+      return;
+    }
+
+    // Step 2: If conversation exists, redirect to chat page
+    if (existingConversations?.length) {
+      return router.push(`/chat/${existingConversations[0].id}`);
+    }
+
+    // Step 3: If conversation does not exist, create a new conversation
+    const { data: newConversation, error: insertError } = await supabase
+      .from('conversations')
+      .insert({
+        is_group: false,
+        participants: [user.id, recipientId],
+      })
+      .select();
+
+    if (insertError) {
+      console.error('Error creating conversation:', insertError);
+      return;
+    }
+
+    // Step 4: Redirect to chat page
+    if (newConversation?.length) {
+      return router.push(`/chat/${newConversation[0].id}`);
+    }
+  };
+
+  const getGroups = async () => {
+    if (!user) return;
+
+    const { data: groupData, error } = await supabase
+      .from('conversations')
+      .select('*')
+      .contains('participants', [user.id])
+      .eq('is_group', true);
+
+    if (error) {
+      console.error('Error fetching groups:', error);
+      return;
+    }
+
+    setGroups(groupData || []);
+  };
+
+  useEffect(() => {
+    (async () => {
+      await getGroups();
+    })();
+  }, [user?.id]);
 
   return (
-    <div id="contacts" className="p-2 my-4 text-center">
-      <div className=" font-bold text-stokes-primary items-center inline-flex gap-2">
+    <div id="contacts" className="p-2 m-3 text-left flex flex-col h-full">
+      <div className="font-bold text-stokes-primary inline-flex p-2 mb-2 w-full justify-between">
         Chats
         <RiChatNewLine
-          className="cursor-pointer"
+          className="cursor-pointer flex self-center"
           onClick={() => {
             open();
           }}
         />
       </div>
-      <NewChatModal usersList={usersList} close={close} opened={opened} />
+      <NewChatModal
+        usersList={usersList}
+        close={close}
+        opened={opened}
+        getGroups={getGroups}
+      />
 
-      <div className="relative m-2">
-        <span className="flex gap-2 absolute pl-2 text-slate-400 top-[5px] ">
-          <FaMagnifyingGlass size="13" />
-        </span>
-
-        <input
-          placeholder="Search"
-          className="rounded-lg outline-stokes-secondary outline-2 pl-7 w-full"
-          value={contact}
-          onChange={(event) => setContact(event.target.value)}
-        />
-      </div>
       <div className="flex flex-col gap-3">
-        {filtertedContacts.map((user) => (
-          <Link href={`/chat/${user.id}`} key={user.id}>
-            <div className="text-stokes-primary cursor-pointer self-center inline-flex gap-2">
+        {usersList
+          .filter((someUser) => someUser.username !== user?.username)
+          .map((filteredUser) => (
+            <div
+              key={filteredUser.id}
+              className="text-stokes-primary cursor-pointer self-left inline-flex gap-2 p-1"
+              onClick={() => handleConversation(filteredUser.id)}
+            >
               <Image
-                src={user.imageUrl}
+                src={filteredUser.imageUrl}
                 alt="profile"
                 width="30"
                 height="30"
                 className="rounded-full"
               />
-              {user.username}
+              {filteredUser.username}
+            </div>
+          ))}
+
+        {groups?.map((group) => (
+          <Link
+            href={`/chat/${group.id}`}
+            key={group.id}
+            onMouseEnter={() => setHovered(group.id)}
+            onMouseLeave={() => setHovered(undefined)}
+          >
+            <div className="group cursor-pointer inline-flex hover:bg-stokes-secondary justify-between items-center h-full w-full p-1 pr-2 rounded-sm">
+              <div className="inline-flex gap-2 items-center text-stokes-primary">
+                {defaultGroupAvi}
+                {group.group_name}
+              </div>
+              <ImCancelCircle
+                className={`${
+                  hovered === group.id ? 'hover:opacity-100' : 'opacity-0'
+                } text-stokes-primary`}
+              />
             </div>
           </Link>
         ))}
       </div>
+      <div
+        id="user-status"
+        className="mt-auto mb-4 text-stokes-primary cursor-pointer hover:bg-stokes-secondary inline-flex gap-2 items-center font-bold"
+      >
+        <Image
+          src={user?.imageUrl || ''}
+          alt="profile"
+          width="30"
+          height="30"
+          className="rounded-full"
+        />
+        {user?.username}
+      </div>
     </div>
   );
 };
+
 export default SideBar;
