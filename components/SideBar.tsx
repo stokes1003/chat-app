@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { supabase } from '@/supabase';
 import { RiChatNewLine } from 'react-icons/ri';
@@ -91,7 +91,7 @@ const SideBar: React.FC<SideBarProps> = ({ usersList }) => {
     }
   };
 
-  const getGroups = async () => {
+  const getGroups = useCallback(async () => {
     if (!user) return;
 
     const { data: groupData, error } = await supabase
@@ -106,7 +106,7 @@ const SideBar: React.FC<SideBarProps> = ({ usersList }) => {
     }
 
     setGroups(groupData || []);
-  };
+  }, [user]);
 
   useEffect(() => {
     (async () => {

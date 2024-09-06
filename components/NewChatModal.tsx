@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { MultiSelect, Modal, Button, Input } from '@mantine/core';
 import { useUser } from '@clerk/nextjs';
 import { supabase } from '@/supabase';

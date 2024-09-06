@@ -1,6 +1,6 @@
 'use client';
 import { FaRegPaperPlane } from 'react-icons/fa';
-import { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { supabase } from '@/supabase';
 import { RealtimePostgresInsertPayload } from '@supabase/supabase-js';
 import { useUser } from '@clerk/nextjs';
@@ -48,10 +48,13 @@ const ChatBox: React.FC<ChatBoxProps> = ({
   const [messages, setMessages] = useState<Message[]>(messagesData);
   const { user } = useUser();
 
-  const handleInserts = (payload: RealtimePostgresInsertPayload<Message>) => {
-    if (payload.new.conversation_id !== conversationId) return;
-    setMessages((prevMessages) => [...prevMessages, payload.new]);
-  };
+  const handleInserts = useCallback(
+    (payload: RealtimePostgresInsertPayload<Message>) => {
+      if (payload.new.conversation_id !== conversationId) return;
+      setMessages((prevMessages) => [...prevMessages, payload.new]);
+    },
+    [conversationId]
+  );
 
   const currentUserID = user?.id;
   const defaultGroupAvi = (
@@ -95,7 +98,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
       return;
     }
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('messages')
       .insert({
         content: message,
@@ -110,9 +113,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
       return;
     }
 
-    if (data && data.length > 0) {
-      setMessage('');
-    }
+    setMessage('');
   };
 
   const getUsername = (id: string) => {
@@ -164,69 +165,69 @@ const ChatBox: React.FC<ChatBoxProps> = ({
         <div className="w-full h-[42px] justify-center font-bold rounded-md bg-stokes-secondary/80 outline-1 outline-stokes-primary text-stokes-primary  inline-flex gap-2">
           {messageName()}
         </div>
-        <div id="messages" className="h-[550px] overflow-y-scroll">
-          {messages.map((msg) => (
+      </div>
+      <div id="messages" className="h-[550px] overflow-y-scroll">
+        {messages.map((msg) => (
+          <div
+            key={msg.id}
+            className={`flex ${
+              getUsername(msg.sender_id) === username
+                ? 'justify-end'
+                : 'justify-start'
+            }`}
+          >
             <div
-              key={msg.id}
-              className={`flex ${
+              id="message"
+              className={`flex flex-col ${
                 getUsername(msg.sender_id) === username
-                  ? 'justify-end'
-                  : 'justify-start'
+                  ? 'w-2/3 m-1 bg-stokes-accent/80  rounded-lg'
+                  : 'w-2/3 m-1 bg-stokes-secondary/80  rounded-lg'
               }`}
             >
-              <div
-                id="message"
-                className={`flex flex-col ${
-                  getUsername(msg.sender_id) === username
-                    ? 'w-2/3 m-1 bg-stokes-accent/80  rounded-lg'
-                    : 'w-2/3 m-1 bg-stokes-secondary/80  rounded-lg'
-                }`}
-              >
-                <div className="font-bold text-white  ml-4" id="messageUser">
-                  {getUsername(msg.sender_id)}{' '}
-                  <span className="font-extralight text-slate-100">
-                    {new Date(msg.created_at).toLocaleTimeString([], {
-                      timeStyle: 'short',
-                    })}
-                  </span>
-                </div>
+              <div className="font-bold text-white  ml-4" id="messageUser">
+                {getUsername(msg.sender_id)}{' '}
+                <span className="font-extralight text-slate-100">
+                  {new Date(msg.created_at).toLocaleTimeString([], {
+                    timeStyle: 'short',
+                  })}
+                </span>
+              </div>
 
-                <div className="font-normal text-white  ml-4" id="messageText">
-                  {msg.content}
-                </div>
+              <div className="font-normal text-white  ml-4" id="messageText">
+                {msg.content}
               </div>
             </div>
-          ))}
-
-          <div ref={messagesEndRef} />
-        </div>
-
-        <div>
-          <div id="chat-input" className="rounded">
-            <form
-              className="flex flex-row cursor-text h-14 "
-              onSubmit={(event) => {
-                event.preventDefault();
-                sendMessage(message);
-              }}
-            >
-              <input
-                className="w-full h-full rounded-lg mx-1 text-stokes-secondary "
-                placeholder=" Type a message..."
-                value={message}
-                onChange={(event) => setMessage(event.target.value)}
-                type="text"
-              />
-              <div id="button" className="self-center mr-1">
-                <button
-                  className="p-4 text-white hover:bg-stokes-accent-dark bg-stokes-accent/80 shadow-lg drop-shadow-sm shadow-inherit rounded-md"
-                  type="submit"
-                >
-                  <FaRegPaperPlane size="20" />
-                </button>
-              </div>
-            </form>
           </div>
+        ))}
+
+        <div ref={messagesEndRef} />
+      </div>
+
+      <div>
+        <div id="chat-input" className="rounded">
+          <form
+            className="flex flex-row cursor-text h-14 "
+            onSubmit={(event) => {
+              event.preventDefault();
+              sendMessage(message);
+            }}
+          >
+            <input
+              className="w-full h-full rounded-lg mx-1 text-stokes-secondary "
+              placeholder=" Type a message..."
+              value={message}
+              onChange={(event) => setMessage(event.target.value)}
+              type="text"
+            />
+            <div id="button" className="self-center mr-1">
+              <button
+                className="p-4 text-white hover:bg-stokes-accent-dark bg-stokes-accent/80 shadow-lg drop-shadow-sm shadow-inherit rounded-md"
+                type="submit"
+              >
+                <FaRegPaperPlane size="20" />
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>

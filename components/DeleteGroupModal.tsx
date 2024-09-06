@@ -3,6 +3,7 @@ import { supabase } from '@/supabase';
 import { useRouter } from 'next/navigation';
 import { Group } from './SideBar';
 import { User } from './SideBar';
+import React from 'react';
 
 interface DeleteGroupProps {
   group: Group;

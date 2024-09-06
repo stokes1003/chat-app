@@ -1,14 +1,10 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import {
-  ClerkProvider,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from '@clerk/nextjs';
+import { ClerkProvider, SignedIn, SignedOut } from '@clerk/nextjs';
 import '@mantine/core/styles.css';
+import React from 'react';
+import Header from '@/components/Header';
 
 import { ColorSchemeScript, MantineProvider } from '@mantine/core';
 
@@ -32,12 +28,7 @@ export default function RootLayout({
         </head>
         <body className={inter.className}>
           <MantineProvider>
-            <SignedOut>
-              <SignInButton />
-            </SignedOut>
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
+            <Header />
             {children}
           </MantineProvider>
         </body>
