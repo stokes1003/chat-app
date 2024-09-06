@@ -66,7 +66,7 @@ const NewChatModal: React.FC<ModalProps> = ({
 
   return (
     <>
-      <Modal opened={opened} onClose={close} title="Create New Chat">
+      <Modal opened={opened} onClose={close} title="Create New Group Chat">
         <form onSubmit={handleSubmit} className="m-2">
           <MultiSelect
             data={items}

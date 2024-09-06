@@ -120,7 +120,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
   };
 
   const messageName = () => {
-    if (conversationData.is_group) {
+    if (conversationData?.is_group) {
       return (
         <div className="inline-flex gap-2 self-center items-center">
           {defaultGroupAvi} {conversationData.group_name}
@@ -130,7 +130,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
       const DMRecipient = usersList.find(
         (user) =>
           user.id ===
-          (conversationData.participants.find(
+          (conversationData?.participants.find(
             (participant) => participant !== currentUserID
           ) as string)
       )?.username;
@@ -219,7 +219,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
               />
               <div id="button" className="self-center mr-1">
                 <button
-                  className="p-4 text-white  bg-stokes-accent/80 shadow-lg drop-shadow-sm shadow-inherit rounded-md"
+                  className="p-4 text-white hover:bg-stokes-accent-dark bg-stokes-accent/80 shadow-lg drop-shadow-sm shadow-inherit rounded-md"
                   type="submit"
                 >
                   <FaRegPaperPlane size="20" />
