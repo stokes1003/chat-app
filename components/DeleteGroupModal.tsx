@@ -45,8 +45,8 @@ const DeleteGroupModal: React.FC<DeleteGroupProps> = ({
   return (
     <Modal opened={true} onClose={onClose} title="Leave Group?">
       <p>
-        Are you sure you want to leave {group.group_name}? You won't be able to
-        rejoin this group.
+        Are you sure you want to leave {group.group_name}? You won&apos;t be
+        able to rejoin this group.
       </p>
       <div className="flex justify-end mt-4">
         <Button
