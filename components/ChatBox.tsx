@@ -77,7 +77,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
     return () => {
       channel.unsubscribe();
     };
-  }, []);
+  }, [handleInserts]);
 
   useEffect(() => {
     scrollToBottom();

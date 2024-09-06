@@ -112,7 +112,7 @@ const SideBar: React.FC<SideBarProps> = ({ usersList }) => {
     (async () => {
       await getGroups();
     })();
-  }, [user?.id]);
+  }, [getGroups]);
 
   const handleDeleteGroupClick = (group: Group) => {
     setSelectedGroup(group);
