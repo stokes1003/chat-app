@@ -1,11 +1,9 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { ClerkProvider, SignInButton } from '@clerk/nextjs';
+import { ClerkProvider } from '@clerk/nextjs';
 import '@mantine/core/styles.css';
 import React from 'react';
-import Header from '@/components/Header';
-import { SignedOut } from '@clerk/nextjs';
 
 import { ColorSchemeScript, MantineProvider } from '@mantine/core';
 

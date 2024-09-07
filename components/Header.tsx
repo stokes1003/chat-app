@@ -1,4 +1,4 @@
-import { SignedOut, SignInButton, UserButton } from '@clerk/nextjs';
+import { UserButton } from '@clerk/nextjs';
 import { FaRobot } from 'react-icons/fa';
 import Link from 'next/link';
 
