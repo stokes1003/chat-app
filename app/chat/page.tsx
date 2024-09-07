@@ -1,12 +1,16 @@
 import { FaRegPaperPlane } from 'react-icons/fa';
-
 import { currentUser } from '@clerk/nextjs/server';
 import { FaRobot } from 'react-icons/fa';
+import { redirect } from 'next/navigation';
 
 import Image from 'next/image';
 
 const Page = async () => {
   const user = await currentUser();
+
+  if (!user) {
+    redirect('/sign-in');
+  }
   return (
     <div
       id="chat-box"

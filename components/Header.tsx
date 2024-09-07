@@ -9,16 +9,7 @@ function Header() {
         <div className="flex mx-1 content-center py-1">
           <UserButton />
         </div>
-        <div id="buttons" className="py-1">
-          <SignedOut>
-            <button className="ring-2 ring-stokes-accent  mx-1 outline-stokes-accent font-medium hover:ring-stokes-accent-dark text-stokes-accent hover:text-stokes-accent-dark h-7 w-20 rounded">
-              Sign Up
-            </button>
-            <button className="bg-stokes-accent mx-1 hover:bg-stokes-accent-dark font-medium text-stokes-primary hover:text-stokes-primary-dark h-8 w-20 rounded">
-              <SignInButton />
-            </button>
-          </SignedOut>
-        </div>
+        <div id="buttons" className="py-1"></div>
         <Link href="/chat" className="content-center">
           <div className="inline-flex gap-1 items-center pl-4">
             <div className=" inline-flex gap-0">
