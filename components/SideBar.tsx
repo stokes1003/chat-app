@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { supabase } from '@/supabase';
 import { RiChatNewLine } from 'react-icons/ri';
-import NewChatModal from './NewChatModal';
+import NewChatModal from '@/components/NewChatModal';
 import { useDisclosure } from '@mantine/hooks';
 import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import { GrGroup } from 'react-icons/gr';
 import { ImCancelCircle } from 'react-icons/im';
 import DeleteGroupModal from './DeleteGroupModal';
+import { useMediaQuery } from '@mantine/hooks';
 
 export interface User {
   username: string;
@@ -35,6 +36,7 @@ const SideBar: React.FC<SideBarProps> = ({ usersList }) => {
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
   const router = useRouter();
   const [hovered, setHovered] = useState<undefined | string>();
+  const isMobile = useMediaQuery('(max-width: 928px)');
 
   const [
     deleteGroupOpened,
@@ -119,8 +121,97 @@ const SideBar: React.FC<SideBarProps> = ({ usersList }) => {
     openDeleteGroup();
   };
 
+  if (isMobile) {
+    return (
+      <div id="contacts" className="px-4 pt-2  text-left flex flex-col grow">
+        <div className="font-bold text-lg text-stokes-primary inline-flex pt-2 px-3 mb-2 w-full justify-between">
+          Group Chats
+          <RiChatNewLine
+            className="cursor-pointer flex self-center text-lg hover:text-stokes-primary-dark "
+            onClick={() => {
+              openCreateGroup();
+            }}
+          />
+        </div>
+        <NewChatModal
+          usersList={usersList}
+          close={closeCreateGroup}
+          opened={createGroupOpened}
+          getGroups={getGroups}
+        />
+
+        <div className="flex flex-col text-lg px-3 gap-3">
+          {groups?.map((group) => (
+            <Link
+              href={`/chat/${group.id}`}
+              key={group.id}
+              onMouseEnter={() => setHovered(group.id)}
+              onMouseLeave={() => setHovered(undefined)}
+            >
+              <div className="group cursor-pointer inline-flex hover:bg-stokes-secondary justify-between items-center h-full w-full p-1 pr-2 rounded-sm">
+                <div className="inline-flex gap-2 text-lg items-center text-stokes-primary">
+                  {defaultGroupAvi}
+                  {group.group_name}
+                </div>
+                <ImCancelCircle
+                  onClick={() => handleDeleteGroupClick(group)}
+                  className={`${
+                    hovered === group.id ? 'hover:opacity-100' : 'opacity-0'
+                  } text-stokes-primary hover:text-stokes-primary-dark`}
+                />
+              </div>
+            </Link>
+          ))}
+          {deleteGroupOpened && (
+            <DeleteGroupModal
+              group={selectedGroup as Group}
+              onClose={closeDeleteGroup}
+              onDelete={closeDeleteGroup}
+              opened={deleteGroupOpened}
+              user={user as User}
+            />
+          )}
+          <div className="font-bold text-stokes-primary text-lg inline-flex px-1 mb-2 w-full justify-between">
+            Direct Messages
+          </div>
+          {usersList
+            .filter((someUser) => someUser.username !== user?.username)
+            .map((filteredUser) => (
+              <div
+                key={filteredUser.id}
+                className="text-stokes-primary cursor-pointer hover:bg-stokes-secondary self-left inline-flex gap-2 p-1"
+                onClick={() => handleConversation(filteredUser.id)}
+              >
+                <Image
+                  src={filteredUser.imageUrl}
+                  alt="profile"
+                  width="30"
+                  height="30"
+                  className="rounded-full"
+                />
+                {filteredUser.username}
+              </div>
+            ))}
+        </div>
+        {/* <div
+          id="user-status"
+          className="mt-auto mb-4 text-stokes-primary cursor-pointer text-lg hover:bg-stokes-secondary inline-flex gap-2 items-center p-10 font-bold"
+        >
+          <Image
+            src={user?.imageUrl || ''}
+            alt="profile"
+            width="30"
+            height="30"
+            className="rounded-full"
+          />
+          {user?.username}
+        </div> */}
+      </div>
+    );
+  }
+
   return (
-    <div id="contacts" className="p-2 m-3 text-left flex flex-col h-full">
+    <div id="contacts" className="p-2 text-left flex flex-col grow">
       <div className="font-bold text-stokes-primary inline-flex p-2 mb-2 w-full justify-between">
         Group Chats
         <RiChatNewLine

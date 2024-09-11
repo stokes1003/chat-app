@@ -9,6 +9,7 @@ module.exports = {
     extend: {
       colors: {
         'stokes-secondary': '#5e69ee',
+        'stokes-secondary-lighter': '#8c96f3',
         'stokes-accent': '#39AFEA',
         'stokes-accent-dark': '#2993C2',
         'stokes-primary': ' #F4F4FB',
