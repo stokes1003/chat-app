@@ -28,9 +28,10 @@ export interface Group {
 
 interface SideBarProps {
   usersList: User[];
+  setIsSideBarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const SideBar: React.FC<SideBarProps> = ({ usersList }) => {
+const SideBar: React.FC<SideBarProps> = ({ usersList, setIsSideBarOpen }) => {
   const { user } = useUser();
   const [groups, setGroups] = useState<Group[]>([]);
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
@@ -55,6 +56,7 @@ const SideBar: React.FC<SideBarProps> = ({ usersList }) => {
 
   const handleConversation = async (recipientId: string) => {
     if (!user) return;
+    setIsSideBarOpen(false);
 
     // Step 1: Check if conversation exists
     const { data: existingConversations, error } = await supabase

@@ -19,6 +19,8 @@ export const AppContainer = ({ usersList, children }: Props) => {
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width: 928px)');
 
+  console.log(isSideBarOpen);
+
   return (
     <>
       <Transition
@@ -32,14 +34,22 @@ export const AppContainer = ({ usersList, children }: Props) => {
             className="absolute w-full z-50  bg-gradient-to-r from-stokes-secondary to-stokes-secondary-lighter top-10 h-full rounded"
             style={styles}
           >
-            <SideBar usersList={usersList} />
+            <SideBar
+              usersList={usersList}
+              setIsSideBarOpen={setIsSideBarOpen}
+            />
           </div>
         )}
       </Transition>
       <Header setIsSideBarOpen={setIsSideBarOpen} />
       <div className="flex size-full justify-center">
         <div className="grid grid-cols-5 grid-flow-col mx-4 border-stokes-secondary bg-gradient-to-r from-stokes-secondary/95 to-stokes-primary border-4 rounded-lg w-full">
-          {!isMobile && <SideBar usersList={usersList} />}
+          {!isMobile && (
+            <SideBar
+              usersList={usersList}
+              setIsSideBarOpen={setIsSideBarOpen}
+            />
+          )}
           {children}
         </div>
       </div>
