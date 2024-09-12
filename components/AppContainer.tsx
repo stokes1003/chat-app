@@ -19,6 +19,8 @@ export const AppContainer = ({ usersList, children }: Props) => {
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width: 928px)');
 
+  console.log(isSideBarOpen);
+
   return (
     <>
       <Transition

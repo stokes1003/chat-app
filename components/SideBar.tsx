@@ -149,6 +149,7 @@ const SideBar: React.FC<SideBarProps> = ({ usersList, setIsSideBarOpen }) => {
               key={group.id}
               onMouseEnter={() => setHovered(group.id)}
               onMouseLeave={() => setHovered(undefined)}
+              onClick={() => setIsSideBarOpen(false)}
             >
               <div className="group cursor-pointer inline-flex hover:bg-stokes-secondary justify-between items-center h-full w-full p-1 pr-2 rounded-sm">
                 <div className="inline-flex gap-2 text-lg items-center text-stokes-primary">
