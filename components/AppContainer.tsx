@@ -29,7 +29,7 @@ export const AppContainer = ({ usersList, children }: Props) => {
       >
         {(styles) => (
           <div
-            className="absolute w-full z-50  bg-gradient-to-r from-stokes-secondary to-stokes-secondary-lighter top-10 h-full rounded"
+            className="absolute w-full z-50 bg-gradient-to-r from-stokes-secondary to-stokes-secondary-lighter top-9 h-[calc(100%-36px)] rounded"
             style={styles}
           >
             <SideBar
@@ -40,7 +40,7 @@ export const AppContainer = ({ usersList, children }: Props) => {
         )}
       </Transition>
       <Header setIsSideBarOpen={setIsSideBarOpen} />
-      <div className="flex size-full justify-center pb-11">
+      <div className="flex size-full justify-center pb-4">
         <div className="grid grid-cols-5 grid-flow-col mx-4  border-stokes-secondary bg-gradient-to-r from-stokes-secondary/95 to-stokes-primary border-4 rounded-lg w-full">
           {!isMobile && (
             <SideBar

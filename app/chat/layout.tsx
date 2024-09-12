@@ -16,7 +16,7 @@ const DirectMessage = async ({
   }));
 
   return (
-    <div className="h-svh">
+    <div className="h-[calc(100vh-36px)]">
       <AppContainer usersList={usersList}>{children}</AppContainer>
     </div>
   );

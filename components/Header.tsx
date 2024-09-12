@@ -21,7 +21,6 @@ function Header({ setIsSideBarOpen }: Props) {
             <div className="flex mx-1 content-center py-1">
               <UserButton />
             </div>
-            <div id="buttons" className="py-1"></div>
             <Link href="/chat" className="content-center">
               <div
                 onClick={() => setIsSideBarOpen(false)}
