@@ -24,7 +24,7 @@ const RobotChat = () => {
               width="30"
               height="30"
               className="rounded-full"
-            />{' '}
+            />
             Welcome Robot
           </div>
         </div>

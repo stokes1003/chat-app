@@ -7,7 +7,7 @@ const DirectMessage = async ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  const users = await clerkClient().users.getUserList();
+  const users = await clerkClient.users.getUserList();
 
   const usersList = users.data.map((user) => ({
     username: user.username as string,
@@ -16,7 +16,7 @@ const DirectMessage = async ({
   }));
 
   return (
-    <div className="h-dvh">
+    <div className="h-svh">
       <AppContainer usersList={usersList}>{children}</AppContainer>
     </div>
   );

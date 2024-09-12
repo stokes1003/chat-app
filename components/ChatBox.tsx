@@ -171,7 +171,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
           {messageName()}
         </div>
       </div>
-      <div id="messages" className="h-[calc(100%-112px)] overflow-y-scroll   ">
+      <div id="messages" className="h-[calc(100%-112px)] overflow-y-scroll">
         {messages.map((msg) => (
           <div
             key={msg.id}
