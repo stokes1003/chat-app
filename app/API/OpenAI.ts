@@ -9,15 +9,20 @@ export async function getMessage(
     const response = await axios.post(
       'https://api.openai.com/v1/chat/completions',
       {
-        model: 'gpt-4o-mini', // You had 'gpt-4o mini', but OpenAI offers 'gpt-4' or 'gpt-3.5-turbo'
+        model: 'gpt-4o-mini',
         messages: [
+          {
+            role: 'system',
+            content:
+              'Respond in a casual tone, using all lowercase letters. Keep responses brief, ideally 1-2 sentences. Mix in follow-up questions and suggestions to engage the user when appropriate.',
+          },
           {
             role: 'user',
             content: chatMessage,
           },
         ],
-        max_tokens: 100, // You can limit tokens based on your needs
-        temperature: 0.7, // This controls randomness; 0.7 is a balanced value
+        max_tokens: 100,
+        temperature: 0.7,
       },
       {
         headers: {
@@ -37,10 +42,10 @@ export async function getMessage(
       return response.data.choices[0].message.content;
     } else {
       console.error('Unexpected response format:', response);
-      return 'Sorry, something went wrong. Please try again later.'; // Fallback message
+      return 'Sorry, something went wrong. Please try again later.';
     }
   } catch (error) {
     console.error('Error fetching ChatGPT response:', error);
-    return 'Sorry, I am having trouble processing your request.'; // Error fallback
+    return 'Sorry, I am having trouble processing your request.';
   }
 }

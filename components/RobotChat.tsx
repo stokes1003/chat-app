@@ -11,7 +11,7 @@ const RobotChat = () => {
   const { user } = useUser();
   const [message, setMessage] = useState<string>('');
   const [chatHistory, setChatHistory] = useState<
-    Array<{ userMessage: string; gptResponse: string }>
+    Array<{ userMessage?: string; gptResponse?: string }>
   >([]);
 
   const turboRobotLogo = () => {
@@ -33,16 +33,17 @@ const RobotChat = () => {
   const handleSubmit = async (message: string) => {
     if (!message.trim()) return;
 
+    setChatHistory((prevHistory) => [...prevHistory, { userMessage: message }]);
+
+    setMessage('');
+
     try {
       const responseMessage = await getMessage(message);
-      if (responseMessage) {
-        setTimeout(() => {
-          setChatHistory((prevHistory) => [
-            ...prevHistory,
-            { userMessage: message, gptResponse: responseMessage },
-          ]);
-          setMessage('');
-        }, 2000);
+      if (responseMessage?.trim()) {
+        setChatHistory((prevHistory) => [
+          ...prevHistory,
+          { gptResponse: responseMessage as string },
+        ]);
       }
     } catch (error) {
       console.error('Error fetching message:', error);
@@ -58,7 +59,7 @@ const RobotChat = () => {
       id="chat-box"
       className={`outline-2 ${
         isMobile ? 'col-span-5' : 'col-span-4'
-      } bg-stokes-primary/70 outline-stokes-secondary rounded-lg h-full`}
+      } bg-stokes-primary/70 outline-stokes-secondary rounded-lg overflow-auto h-full`}
     >
       <div id="chat-name" className="flex flex-col gap-3 m-1">
         <div className="w-full h-[42px] justify-center items-center font-bold rounded-md bg-stokes-secondary/80 outline-1 outline-stokes-primary text-stokes-primary inline-flex gap-2">
