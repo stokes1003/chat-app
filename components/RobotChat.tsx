@@ -33,17 +33,25 @@ const RobotChat = () => {
   const handleSubmit = async (message: string) => {
     if (!message.trim()) return;
 
-    setChatHistory((prevHistory) => [...prevHistory, { userMessage: message }]);
+    // Create a new entry with just the userMessage
+    const newMessage = { userMessage: message, gptResponse: '' };
+
+    // Append user message to the chat history
+    setChatHistory((prevHistory) => [...prevHistory, newMessage]);
 
     setMessage('');
 
     try {
+      // Simulate GPT response delay
       const responseMessage = await getMessage(message);
       if (responseMessage?.trim()) {
-        setChatHistory((prevHistory) => [
-          ...prevHistory,
-          { gptResponse: responseMessage as string },
-        ]);
+        // Update the last message with the GPT response
+        setChatHistory((prevHistory) => {
+          const updatedHistory = [...prevHistory];
+          updatedHistory[updatedHistory.length - 1].gptResponse =
+            responseMessage;
+          return updatedHistory;
+        });
       }
     } catch (error) {
       console.error('Error fetching message:', error);
@@ -77,7 +85,6 @@ const RobotChat = () => {
         id="messages"
         className="h-[calc(100%-112px)] overflow-y-scroll flex flex-col relative"
       >
-        {/* Background Robot Icon */}
         <div className="absolute inset-0 flex justify-center items-center z-0">
           <FaRobot size="200" className="opacity-40" color="#5e69ee" />
         </div>

@@ -14,7 +14,7 @@ export async function getMessage(
           {
             role: 'system',
             content:
-              'Respond in a casual tone, using all lowercase letters. Keep responses brief, ideally 1-2 sentences. Mix in follow-up questions and suggestions to engage the user when appropriate.',
+              'Respond in a casual tone, using all lowercase letters. Keep responses brief, ideally 1-2 sentences. ',
           },
           {
             role: 'user',
