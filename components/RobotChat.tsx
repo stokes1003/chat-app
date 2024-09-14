@@ -13,6 +13,7 @@ const RobotChat = () => {
   const [chatHistory, setChatHistory] = useState<
     Array<{ userMessage?: string; gptResponse?: string }>
   >([]);
+  const [isTyping, setIsTyping] = useState<boolean>(false);
 
   const turboRobotLogo = () => {
     return (
@@ -42,6 +43,7 @@ const RobotChat = () => {
     setMessage('');
 
     try {
+      setIsTyping(true);
       // Simulate GPT response delay
       const responseMessage = await getMessage(message);
       if (responseMessage?.trim()) {
@@ -50,6 +52,7 @@ const RobotChat = () => {
           const updatedHistory = [...prevHistory];
           updatedHistory[updatedHistory.length - 1].gptResponse =
             responseMessage;
+          setIsTyping(false);
           return updatedHistory;
         });
       }
@@ -130,7 +133,7 @@ const RobotChat = () => {
                   </div>
 
                   <div className="font-normal text-white ml-4" id="messageText">
-                    {msg.gptResponse}
+                    {msg.gptResponse || (isTyping && 'Typing...')}
                   </div>
                 </div>
               </div>
