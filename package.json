@@ -19,6 +19,7 @@
     "@mantine/core": "^7.12.2",
     "@mantine/hooks": "^7.12.2",
     "@supabase/supabase-js": "^2.45.2",
+    "@vanilla-extract/css": "^1.15.5",
     "axios": "^1.7.7",
     "next": "14.2.7",
     "react": "^18",

@@ -4,6 +4,7 @@ import { FaRobot, FaRegPaperPlane } from 'react-icons/fa';
 import { useUser } from '@clerk/nextjs';
 import { getMessage } from '@/app/API/OpenAI';
 import React, { useState, useRef, useEffect } from 'react';
+import BouncingDotsLoader from './BouncingDots';
 
 const RobotChat = () => {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -58,6 +59,7 @@ const RobotChat = () => {
       }
     } catch (error) {
       console.error('Error fetching message:', error);
+      setIsTyping(false);
     }
   };
 
@@ -133,7 +135,7 @@ const RobotChat = () => {
                   </div>
 
                   <div className="font-normal text-white ml-4" id="messageText">
-                    {msg.gptResponse || (isTyping && 'Typing...')}
+                    {msg.gptResponse || (isTyping && <BouncingDotsLoader />)}
                   </div>
                 </div>
               </div>

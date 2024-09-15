@@ -1,0 +1,28 @@
+/* BouncingDots.module.css */
+.loader {
+  width: 15px !important;
+  aspect-ratio: 1 !important;
+  border-radius: 50% !important;
+  animation: l5 1s infinite linear alternate !important;
+  background-color: white !important;
+  margin-left: 4px !important;
+}
+
+@keyframes l5 {
+  0% {
+    box-shadow: 20px 0 #000, -20px 0 #0002;
+    background: #000;
+  }
+  33% {
+    box-shadow: 20px 0 #000, -20px 0 #0002;
+    background: #0002;
+  }
+  66% {
+    box-shadow: 20px 0 #0002, -20px 0 #000;
+    background: #0002;
+  }
+  100% {
+    box-shadow: 20px 0 #0002, -20px 0 #000;
+    background: #000;
+  }
+}

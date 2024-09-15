@@ -10,6 +10,7 @@ export async function getMessage(
       'https://api.openai.com/v1/chat/completions',
       {
         model: 'gpt-4o-mini',
+
         messages: [
           {
             role: 'system',
