@@ -45,8 +45,9 @@ const RobotChat = () => {
 
     try {
       setIsTyping(true);
-      // Simulate GPT response delay
-      const responseMessage = await getMessage(message);
+      const delay = new Promise((resolve) => setTimeout(resolve, 1000));
+      const [responseMessage] = await Promise.all([getMessage(message), delay]);
+
       if (responseMessage?.trim()) {
         // Update the last message with the GPT response
         setChatHistory((prevHistory) => {
@@ -134,7 +135,10 @@ const RobotChat = () => {
                     </span>
                   </div>
 
-                  <div className="font-normal text-white ml-4" id="messageText">
+                  <div
+                    className="font-normal text-white pl-4 pb-2"
+                    id="messageText"
+                  >
                     {msg.gptResponse || (isTyping && <BouncingDotsLoader />)}
                   </div>
                 </div>

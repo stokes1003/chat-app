@@ -1,27 +1,15 @@
+/* HTML: <div class="loader"></div> */
 .loader {
-  width: 15px !important;
-  aspect-ratio: 1 !important;
-  border-radius: 50% !important;
-  animation: l5 1s infinite linear alternate !important;
-  background-color: white !important;
-  margin-left: 4px !important;
+  width: 40px;
+  aspect-ratio: 4;
+  background: radial-gradient(circle closest-side, #fff 90%, #0000) 0 /
+    calc(100% / 3) 100% space;
+  clip-path: inset(0 100% 0 0);
+  animation: l1 1s steps(4) infinite;
+  opacity: 70%;
 }
-
-@keyframes l5 {
-  0% {
-    box-shadow: 20px 0 #000, -20px 0 #0002;
-    background: #000;
-  }
-  33% {
-    box-shadow: 20px 0 #000, -20px 0 #0002;
-    background: #0002;
-  }
-  66% {
-    box-shadow: 20px 0 #0002, -20px 0 #000;
-    background: #0002;
-  }
-  100% {
-    box-shadow: 20px 0 #0002, -20px 0 #000;
-    background: #000;
+@keyframes l1 {
+  to {
+    clip-path: inset(0 -34% 0 0);
   }
 }
