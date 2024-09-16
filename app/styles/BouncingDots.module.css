@@ -1,4 +1,20 @@
-/* BouncingDots.module.css */
+.loader {
+  width: 20px !important;
+  aspect-ratio: 4 !important;
+  background: radial-gradient(circle closest-side, #fff 90%, transparent) 0 /
+    calc(100% / 3) 100% space !important;
+  clip-path: inset(0 100% 0 0) !important;
+  animation: l1 1s steps(4) infinite !important;
+  margin-left: 4px !important;
+}
+
+@keyframes l1 {
+  to {
+    clip-path: inset(0 -34% 0 0);
+  }
+}
+
+/* BouncingDots.module.css
 .loader {
   width: 15px !important;
   aspect-ratio: 1 !important;
@@ -25,4 +41,4 @@
     box-shadow: 20px 0 #0002, -20px 0 #000;
     background: #000;
   }
-}
+} */
